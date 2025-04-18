@@ -16,7 +16,6 @@ from utils import pretty_print as print
 def multi_thread_scan(dst_ips, max_threads, timeout, scan_type, interval, **extra):
 
     dispatcher_job = functools.partial(_call_dispatcher, timeout=timeout, scan_type=scan_type)
-    dst_ports = extra.get('dst_ports', [1])
 
     live_hosts = set()
 
