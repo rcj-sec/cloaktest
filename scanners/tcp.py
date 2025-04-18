@@ -37,7 +37,7 @@ __scan_addresses_types = {
 }
 
 __perform_types = {
-    'dst_ip': int,
+    'dst_ip': str,
     'dst_port': int, 
     'timeout': int
 }
@@ -70,7 +70,7 @@ def syn_scan_network(dst_network_ip: str, dst_network_mask: int | None = None, d
     )
 
 @validation.function_types(__scan_addresses_types)
-def syn_scan_addresses(dst_ips, dst_ports: None | list[int] = None, max_threads: int = 100, timeout: int = 2, interval: int = 0):
+def syn_scan_addresses(dst_ips: list[str] | str, dst_ports: None | list[int] = None, max_threads: int = 100, timeout: int = 2, interval: int = 0):
     """Perform an SYN scan using SYN packets on one or many hosts. **Wrapper for public use**.
 
     Args:
@@ -103,6 +103,7 @@ def _syn_scan(dst_ips, dst_ports, max_threads, timeout, interval):
 
     live_hosts = scanner.multi_thread_scan(
         dst_ips=dst_ips,
+        dst_ports=dst_ports,
         max_threads=max_threads,
         timeout=timeout, 
         scan_type='syn', 
@@ -141,7 +142,7 @@ def tcp_connect_scan_network(dst_network_ip: str, dst_network_mask: int | None =
     )
 
 @validation.function_types(__scan_addresses_types)
-def tcp_connect_scan_addresses(dst_ips, dst_ports: None | list[int] = None, max_threads: int = 100, timeout: int = 2, interval: int = 0) -> list[str]:
+def tcp_connect_scan_addresses(dst_ips: list[str] | str, dst_ports: None | list[int] = None, max_threads: int = 100, timeout: int = 2, interval: int = 0) -> list[str]:
     """Perform an TCP CONNECT scan using 3-way handshake on one or many hosts. **Wrapper for public use**.
 
     Args:
@@ -186,7 +187,7 @@ def _tcp_connect_scan(dst_ip, dst_ports, max_threads=100, timeout=2, interval=0)
     return live_hosts
 
 @validation.function_types(__perform_types)
-def perform_syn_scan(dst_ip: int, dst_port: int, timeout: int = 1) -> bool:
+def perform_syn_scan(dst_ip: str, dst_port: int, timeout: int = 1) -> bool:
     """Performs a single SYN scan on a port of a targeted host. Returns True if host is up.
 
     Args:
@@ -197,7 +198,6 @@ def perform_syn_scan(dst_ip: int, dst_port: int, timeout: int = 1) -> bool:
     Returns:
         bool: True if host is up, False if host is down or unreachable.
     """
-    print.info(f'{dst_ip} : {dst_port}')
     response = _send_syn_packet(dst_ip, dst_port, timeout)
 
     if response is None:
@@ -223,7 +223,7 @@ def perform_syn_scan(dst_ip: int, dst_port: int, timeout: int = 1) -> bool:
     return False
 
 @validation.function_types(__perform_types)
-def perform_tcp_connect_scan(dst_ip: int, dst_port: int, timeout: int = 1) -> bool:
+def perform_tcp_connect_scan(dst_ip: str, dst_port: int, timeout: int = 1) -> bool:
     """Performs a single TCP CONNECT scan on a port of a targeted host. Returns True if host is up.
 
     Args:
