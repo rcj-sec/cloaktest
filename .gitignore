@@ -4,4 +4,6 @@ __pycache__/
 .env
 *.egg-info/
 test.py
+main.py
+notes.md
 .VSCodeCounter/
